@@ -1,7 +1,7 @@
 import { spreadObject as sut } from './spread-object';
 
 describe('spreadObject', () => {
-  it('Should map selected keys from old object to new', async () => {
+  it('Should map selected keys from target object to new object', async () => {
     const oldObject = {
       key1: 'value1',
       key2: {
@@ -17,7 +17,7 @@ describe('spreadObject', () => {
     });
   });
 
-  it('Should map and rename selected keys from old object to new', async () => {
+  it('Should map and rename selected keys from target object', async () => {
     const oldObject = {
       key1: 'value1',
       key2: 'value2',
@@ -53,5 +53,14 @@ describe('spreadObject', () => {
       key1r: 'value1',
       key3r: 'renameMe',
     });
+  });
+
+  it('Should throw when specified key is not present in a target object', () => {
+    const oldObject = {
+      key1: 'value1',
+    };
+
+    // @ts-expect-error
+    expect(sut(oldObject, ['key1', 'key2'])).rejects.toEqual(expect.any(ReferenceError));
   });
 });
