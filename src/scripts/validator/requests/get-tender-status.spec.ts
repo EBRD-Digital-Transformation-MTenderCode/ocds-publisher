@@ -16,13 +16,13 @@ describe('[validator] getTenderStatus', () => {
     expect(axios.get).toHaveBeenCalledWith(`http://localhost:${serviceConfig.port}/ocds/tenders/t`);
   });
 
-  it('Should only return statusCode for a correct tender', async () => {
+  it('Should not return for a correct tender', async () => {
     (axios.get as jest.Mock).mockResolvedValue({ status: 200 });
 
-    expect(await getTenderStatus('t')).toStrictEqual({ statusCode: 200 });
+    expect(await getTenderStatus('t')).toBe(undefined);
   });
 
-  it('Should return both statusCode and message for an incorrect tender', async () => {
+  it('Should throw for an incorrect tender', async () => {
     (axios.get as jest.Mock).mockRejectedValue({
       response: {
         status: 500,
@@ -32,10 +32,7 @@ describe('[validator] getTenderStatus', () => {
       },
     });
 
-    expect(await getTenderStatus('t')).toStrictEqual({
-      statusCode: 500,
-      message: 't: error',
-    });
+    await expect(getTenderStatus('t')).rejects.toEqual(new RequestError(500, 't: error'));
   });
 
   it('Should throw on request error', async () => {
@@ -44,6 +41,6 @@ describe('[validator] getTenderStatus', () => {
       message: 'm',
     });
 
-    expect(await getTenderStatus('t')).toThrow(new RequestError(404, 'm'));
+    await expect(getTenderStatus('t')).rejects.toEqual(new RequestError(404, 'm'));
   });
 });

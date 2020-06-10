@@ -5,17 +5,15 @@ import { tendersUrl } from '../config';
 import { getTenders } from './get-tenders';
 
 jest.mock('axios', () => ({
-  get: jest.fn().mockResolvedValue({
-    data: { data: {} },
-  }),
+  get: jest.fn(),
 }));
 
 describe('[validator] getTenders', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('Should request for a list of tenders', async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: { data: {} },
+    });
+
     await getTenders().next();
 
     expect(axios.get).toHaveBeenCalledTimes(1);
@@ -35,7 +33,9 @@ describe('[validator] getTenders', () => {
           data: {},
         });
 
-      await getTenders().next();
+      const call = await getTenders();
+      await call.next();
+      await call.next();
 
       expect(axios.get).toHaveBeenCalledTimes(2);
       expect(axios.get).toHaveBeenLastCalledWith(`${tendersUrl}?offset=o`);
