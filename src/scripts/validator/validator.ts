@@ -1,10 +1,8 @@
-import { writeFileSync } from 'fs';
 import { resolve } from 'path';
+import { writeFileSync } from 'fs';
 import logger from 'libs/logger';
 
 import { getTenders, getTenderStatus } from './requests';
-
-const errorFilePath = resolve(__dirname, `../../../${+new Date()}.error.log`);
 
 export const validator = async (): Promise<void> => {
   let tendersValidated = 0;
@@ -14,6 +12,8 @@ export const validator = async (): Promise<void> => {
       tendersValidated += 1;
 
       getTenderStatus(tender.ocid).catch((error) => {
+        const errorFilePath = resolve(__dirname, `../../../${+new Date()}.error.log`);
+
         writeFileSync(errorFilePath, `${error.toString()}`);
 
         logger.error(`Wrote encountered error to file ${errorFilePath}.`);
