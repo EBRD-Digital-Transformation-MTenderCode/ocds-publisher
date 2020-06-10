@@ -19,8 +19,8 @@ interface Finance {
 
 interface Budget {
   project: string;
-  amount: Value;
-  finance: Finance[];
+  amount?: Value;
+  finance?: Finance[];
 }
 
 interface Planning {
@@ -59,7 +59,7 @@ export interface ConvertedMultiStage {
     mainProcurementCategory: string;
     eligibilityCriteria: string;
     contractPeriod?: Period;
-    procuringEntity: OrganizationReference;
+    procuringEntity?: OrganizationReference;
     procedure: {
       isAccelerated: boolean;
       acceleratedRationale?: string;

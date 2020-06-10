@@ -44,7 +44,7 @@ export const getRecordsPackage: RequestHandler<unknown, unknown, unknown, { ocid
       version: '1.1',
       extensions: [
         'https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json',
-        'https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension$/v1.1.1/extension.json',
+        'https://raw.githubusercontent.com/open-contracting-extensions/ocds_enquiry_extension/master/extension.json',
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_finance_extension/master/extension.json',
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_process_title_extension/master/extension.json',
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_procedure_extension/master/extension.json',

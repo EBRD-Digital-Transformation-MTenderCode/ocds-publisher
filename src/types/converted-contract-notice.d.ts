@@ -32,7 +32,7 @@ interface Tender {
     };
     techniques?: {
       electronicAuction?: {
-        url: string;
+        url?: string;
       };
     };
   })[];
@@ -72,5 +72,5 @@ export interface ConvertedContractNotice {
   invitations?: Invitation[];
   awards?: Award[];
   bids?: Bid[];
-  parties: Party[];
+  parties?: Party[];
 }

@@ -35,11 +35,15 @@ export const multiStageConverter = async (multiStage: Record): Promise<Converted
     planning: {
       budget: {
         project: expenditureItem.tender.title,
-        amount: {
-          amount: planning.budget.amount.amount,
-          currency: planning.budget.amount.currency,
-        },
-        finance: planning.budget.budgetBreakdown.map(({ id, amount, period, sourceParty }) => ({
+        // check for crashed tenders
+        amount: planning
+          ? {
+              amount: planning.budget.amount.amount,
+              currency: planning.budget.amount.currency,
+            }
+          : undefined,
+        // check for crashed tenders
+        finance: planning?.budget.budgetBreakdown.map(({ id, amount, period, sourceParty }) => ({
           id,
           value: {
             amount: amount.amount,
@@ -74,10 +78,13 @@ export const multiStageConverter = async (multiStage: Record): Promise<Converted
             endDate: tender.contractPeriod.endDate,
           }
         : undefined,
-      procuringEntity: {
-        id: tender.procuringEntity.id,
-        name: tender.procuringEntity.name,
-      },
+      // check for crashed tenders
+      procuringEntity: tender.procuringEntity
+        ? {
+            id: tender.procuringEntity.id,
+            name: tender.procuringEntity.name,
+          }
+        : undefined,
       procedure: {
         isAccelerated: tender.acceleratedProcedure.isAcceleratedProcedure,
         acceleratedRationale: tender.acceleratedProcedure.acceleratedProcedureJustification,

@@ -7,14 +7,15 @@ interface AuctionResult {
 }
 
 interface ElectronicAuctionModality {
+  url?: string;
   eligibleMinimumDifference: Value;
 }
 
 interface AuctionDetails {
   id: string;
   relatedLot: string;
-  auctionPeriod: Period;
-  url: string;
+  auctionPeriod?: Period;
+  url?: string;
   electronicAuctionModalities?: ElectronicAuctionModality[];
   auctionResult?: AuctionResult[];
 }

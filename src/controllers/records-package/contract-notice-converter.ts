@@ -59,13 +59,14 @@ export const contactNoticeConverter = (
             startDate: lot.contractPeriod.startDate,
             endDate: lot.contractPeriod.endDate,
           },
-          techniques: relatedAuction
-            ? {
-                electronicAuction: {
-                  url: relatedAuction.url,
-                },
-              }
-            : undefined,
+          techniques:
+            relatedAuction && relatedAuction.electronicAuctionModalities
+              ? {
+                  electronicAuction: {
+                    url: relatedAuction.electronicAuctionModalities[0].url,
+                  },
+                }
+              : undefined,
         };
       }),
       items: tender.items.map((item) => {
@@ -267,14 +268,16 @@ export const contactNoticeConverter = (
       auctions: tender.electronicAuctions
         ? {
             details: tender.electronicAuctions.details.map(
-              ({ id, relatedLot, auctionPeriod, url, electronicAuctionModalities, auctionResult }) => ({
+              ({ id, relatedLot, auctionPeriod, electronicAuctionModalities, auctionResult }) => ({
                 id,
                 relatedLot,
-                auctionPeriod: {
-                  startDate: auctionPeriod.startDate,
-                  endDate: auctionPeriod.endDate,
-                },
-                url,
+                auctionPeriod: auctionPeriod
+                  ? {
+                      startDate: auctionPeriod.startDate,
+                      endDate: auctionPeriod.endDate,
+                    }
+                  : undefined,
+                url: electronicAuctionModalities?.[0].url,
                 electronicAuctionModalities: electronicAuctionModalities?.map(({ eligibleMinimumDifference }) => ({
                   eligibleMinimumDifference: {
                     amount: eligibleMinimumDifference.amount,
@@ -322,7 +325,7 @@ export const contactNoticeConverter = (
     invitations,
     awards,
     bids,
-    parties: parties.map((party) => {
+    parties: parties?.map((party) => {
       const classifications = [];
 
       if (party.details?.classifications && party.details.classifications.length) {
