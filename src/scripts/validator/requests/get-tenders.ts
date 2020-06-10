@@ -21,7 +21,9 @@ export async function* getTenders(url: string = tendersUrl): AsyncGenerator<Tend
     if (tendersShortPackage?.length) {
       yield tendersShortPackage;
 
-      yield* getTenders(`${tendersUrl}?offset=${offset}`);
+      if (offset) {
+        yield* getTenders(`${tendersUrl}?offset=${offset}`);
+      }
     }
 
     return;
