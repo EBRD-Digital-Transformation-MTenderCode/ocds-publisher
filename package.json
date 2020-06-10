@@ -6,6 +6,7 @@
   "author": "uStudio Front-end Department",
   "scripts": {
     "dev": "cross-env NODE_PATH=./src NODE_ENV=development nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "validate": "cross-env NODE_PATH=./src NODE_ENV=development nodemon --exec 'ts-node' src/scripts/validator/index.ts",
     "build": "yarn clear && tsc --diagnostics && renamer --find src --replace app ./build/*",
     "start": "yarn build && cross-env NODE_PATH=./build/app NODE_ENV=production node build/app/index.js",
     "clear": "rimraf build",
