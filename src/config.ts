@@ -5,5 +5,5 @@ export const serviceConfig = {
 };
 
 export const publicPoint = {
-  baseUrl: 'https://public.mtender.gov.md',
+  baseUrl: process.env.PUBLIC_POINT_URL,
 };

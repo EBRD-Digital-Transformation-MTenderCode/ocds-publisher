@@ -14,6 +14,7 @@
     "test": "jest --watch --config jest.config.js"
   },
   "dependencies": {
+    "@types/lodash.mergewith": "^4.6.6",
     "@types/node": "^14.0.9",
     "@types/pino": "^6.0.1",
     "axios": "^0.19.2",
@@ -22,6 +23,7 @@
     "fastify": "^2.14.1",
     "fastify-cors": "^3.0.3",
     "fastify-swagger": "^2.6.0",
+    "lodash.mergewith": "^4.6.2",
     "pino": "^6.3.1",
     "pino-pretty": "^4.0.0",
     "renamer": "^2.0.0",

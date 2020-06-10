@@ -4,7 +4,7 @@ import { getRecordsPackage } from 'controllers/records-package';
 
 export const tendersRoute = (app: fastify.FastifyInstance): void => {
   app.get(
-    '/tenders/:ocid',
+    '/ocds/tenders/:ocid',
     {
       schema: {
         params: {

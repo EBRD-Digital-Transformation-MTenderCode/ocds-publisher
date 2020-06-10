@@ -1,14 +1,12 @@
 class RequestError extends Error {
   statusCode: number;
   message: string;
-  details: unknown;
 
-  constructor(code: number, message: string, details?: unknown) {
+  constructor(code: number, message: string) {
     super();
 
     this.statusCode = code;
     this.message = message;
-    this.details = details;
   }
 }
 
