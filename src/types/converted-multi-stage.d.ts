@@ -52,6 +52,7 @@ export interface ConvertedMultiStage {
   title: string;
   description: string;
   tender: {
+    id: string;
     value: Value;
     status: string;
     procurementMethod: string;

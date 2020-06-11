@@ -63,6 +63,7 @@ export const multiStageConverter = async (multiStage: Record): Promise<Converted
     title: tender.title,
     description: tender.description,
     tender: {
+      id: tender.id,
       value: {
         amount: tender.value.amount,
         currency: tender.value.currency,
