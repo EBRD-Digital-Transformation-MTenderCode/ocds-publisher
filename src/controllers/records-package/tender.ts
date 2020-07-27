@@ -43,7 +43,7 @@ export const getRecordsPackage: RequestHandler<unknown, unknown, unknown, { ocid
     const response = {
       uri: `${publicPoint.baseUrl}/ocds/tenders/${multiStage.ocid}`,
       version: '1.1',
-      /* extensions: [
+      extensions: [
         'https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json',
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_enquiry_extension/master/extension.json',
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_finance_extension/master/extension.json',
@@ -67,7 +67,7 @@ export const getRecordsPackage: RequestHandler<unknown, unknown, unknown, { ocid
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_requirements_extension/master/extension.json',
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_otherRequirements_extension/master/extension.json',
         'https://raw.githubusercontent.com/eOCDS-Extensions/eOCDS-conversions/master/extension.json',
-      ],*/
+      ],
       publishedDate: data.publishedDate,
       releases: [
         merge(
