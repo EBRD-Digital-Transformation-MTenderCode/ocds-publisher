@@ -18,6 +18,7 @@ interface AuctionDetails {
   url?: string;
   electronicAuctionModalities?: ElectronicAuctionModality[];
   auctionResult?: AuctionResult[];
+  electronicAuctionResult?: AuctionResult[];
 }
 
 export interface Auction {

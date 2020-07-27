@@ -28,7 +28,7 @@ interface Tender {
     hasRecurrence: boolean;
     hasRenewal: boolean;
     submissionTerms: {
-      variantPolicy: boolean;
+      variantPolicy: 'allowed' | 'notAllowed';
     };
     techniques?: {
       electronicAuction?: {
@@ -39,7 +39,7 @@ interface Tender {
   items: (Item & { deliveryAddress: Address & { description?: string } })[];
   tenderPeriod: Period;
   enquiryPeriod: Period;
-  awardPeriod: Period;
+  awardPeriod?: Period;
   auctionPeriod?: Period;
   secondStage?: SecondStage;
   preQualification?: PreQualification;

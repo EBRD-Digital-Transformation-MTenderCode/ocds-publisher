@@ -52,7 +52,7 @@ export const contactNoticeConverter = (
           hasRecurrence: lot.recurrentProcurement[0].isRecurrent,
           hasRenewal: lot.renewals[0].hasRenewals,
           submissionTerms: {
-            variantPolicy: lot.variants[0].hasVariants,
+            variantPolicy: lot.variants[0].hasVariants ? 'allowed' : 'notAllowed',
             electronicCataloguePolicy: lot.requiresElectronicCatalogue,
           },
           contractPeriod: {
@@ -85,14 +85,14 @@ export const contactNoticeConverter = (
             scheme: item.classification.scheme,
             id: item.classification.id,
             description: item.classification.description,
-            uri: item.classification.uri,
+            uri: item.classification.uri || undefined,
           },
           quantity: item.quantity,
           unit: {
             scheme: item.unit.scheme,
             id: item.unit.id,
             name: item.unit.name,
-            uri: item.unit.uri,
+            uri: item.unit.uri || undefined,
           },
           deliveryAddress: {
             streetAddress: relatedLot.placeOfPerformance.address.streetAddress,
@@ -102,19 +102,19 @@ export const contactNoticeConverter = (
                 scheme: relatedLot.placeOfPerformance.address.addressDetails.country.scheme,
                 id: relatedLot.placeOfPerformance.address.addressDetails.country.id,
                 description: relatedLot.placeOfPerformance.address.addressDetails.country.description,
-                uri: relatedLot.placeOfPerformance.address.addressDetails.country.uri,
+                uri: relatedLot.placeOfPerformance.address.addressDetails.country.uri || undefined,
               },
               region: {
                 scheme: relatedLot.placeOfPerformance.address.addressDetails.region.scheme,
                 id: relatedLot.placeOfPerformance.address.addressDetails.region.id,
                 description: relatedLot.placeOfPerformance.address.addressDetails.region.description,
-                uri: relatedLot.placeOfPerformance.address.addressDetails.region.uri,
+                uri: relatedLot.placeOfPerformance.address.addressDetails.region.uri || undefined,
               },
               locality: {
                 scheme: relatedLot.placeOfPerformance.address.addressDetails.locality.scheme,
                 id: relatedLot.placeOfPerformance.address.addressDetails.locality.id,
                 description: relatedLot.placeOfPerformance.address.addressDetails.locality.description,
-                uri: relatedLot.placeOfPerformance.address.addressDetails.locality.uri,
+                uri: relatedLot.placeOfPerformance.address.addressDetails.locality.uri || undefined,
               },
             },
             description: relatedLot.placeOfPerformance.description,
@@ -129,10 +129,12 @@ export const contactNoticeConverter = (
         startDate: tender.enquiryPeriod?.startDate as string,
         endDate: tender.enquiryPeriod?.endDate as string,
       },
-      awardPeriod: {
-        startDate: tender.awardPeriod?.startDate as string,
-        endDate: tender.awardPeriod?.endDate as string,
-      },
+      awardPeriod: tender.awardPeriod
+        ? {
+            startDate: tender.awardPeriod.startDate as string,
+            endDate: tender.awardPeriod.endDate as string,
+          }
+        : undefined,
       auctionPeriod: tender.auctionPeriod
         ? {
             startDate: tender.auctionPeriod?.startDate as string,
@@ -175,7 +177,7 @@ export const contactNoticeConverter = (
         rationale: amendment.rationale,
         description: amendment.description,
         amendsReleaseID: amendment.amendsReleaseID,
-        releaseId: amendment.releaseId,
+        releaseID: amendment.releaseID,
       })),
       documents: tender.documents?.map((document) => ({
         id: document.id,
@@ -184,6 +186,7 @@ export const contactNoticeConverter = (
         description: document.description,
         url: document.url,
         datePublished: document.datePublished,
+        relatedLots: document.relatedLots,
       })),
       criteria: tender.criteria?.map((criterion) => ({
         id: criterion.id,
@@ -197,14 +200,14 @@ export const contactNoticeConverter = (
               scheme: criterion.classification.scheme,
               id: criterion.classification.id,
               description: criterion.classification.description,
-              uri: criterion.classification.uri,
+              uri: criterion.classification.uri || undefined,
             }
           : undefined,
         additionalClassifications: criterion.additionalClassifications?.map(({ scheme, id, description, uri }) => ({
           scheme,
           id,
           description,
-          uri,
+          uri: uri || undefined,
         })),
         legislation: criterion.legislation?.map((legislation) => ({
           version: legislation.version,
@@ -212,7 +215,7 @@ export const contactNoticeConverter = (
             scheme: legislation.identifier.scheme,
             id: legislation.identifier.id,
             legalName: legislation.identifier.legalName,
-            uri: legislation.identifier.uri,
+            uri: legislation.identifier.uri || undefined,
           },
           type: legislation.type,
           article: legislation.article,
@@ -268,7 +271,7 @@ export const contactNoticeConverter = (
       auctions: tender.electronicAuctions
         ? {
             details: tender.electronicAuctions.details.map(
-              ({ id, relatedLot, auctionPeriod, electronicAuctionModalities, auctionResult }) => ({
+              ({ id, relatedLot, auctionPeriod, electronicAuctionModalities, electronicAuctionResult }) => ({
                 id,
                 relatedLot,
                 auctionPeriod: auctionPeriod
@@ -284,7 +287,7 @@ export const contactNoticeConverter = (
                     currency: eligibleMinimumDifference.currency,
                   },
                 })),
-                auctionResult: auctionResult?.map(({ relatedBid, value }) => ({
+                auctionResult: electronicAuctionResult?.map(({ relatedBid, value }) => ({
                   relatedBid,
                   value: {
                     amount: value.amount,
@@ -328,7 +331,7 @@ export const contactNoticeConverter = (
     parties: parties?.map((party) => {
       const classifications = [];
 
-      if (party.details?.classifications && party.details.classifications.length) {
+      if (party.details?.classifications?.length) {
         classifications.push(...party.details.classifications);
       }
 
@@ -337,7 +340,7 @@ export const contactNoticeConverter = (
           scheme: party.details.typeOfSupplier.scheme,
           id: party.details.typeOfSupplier.id,
           description: party.details.typeOfSupplier.description,
-          uri: party.details.typeOfSupplier.uri,
+          uri: party.details.typeOfSupplier.uri || undefined,
         });
       }
 
@@ -346,7 +349,7 @@ export const contactNoticeConverter = (
           scheme: party.details.legalForm.scheme,
           id: party.details.legalForm.id,
           description: party.details.legalForm.description,
-          uri: party.details.legalForm.uri,
+          uri: party.details.legalForm.uri || undefined,
         });
       }
 
@@ -355,12 +358,16 @@ export const contactNoticeConverter = (
           scheme: party.details.mainEconomicActivities.scheme,
           id: party.details.mainEconomicActivities.id,
           description: party.details.mainEconomicActivities.description,
-          uri: party.details.mainEconomicActivities.uri,
+          uri: party.details.mainEconomicActivities.uri || undefined,
         });
       }
 
       return {
         ...party,
+        identifier: {
+          ...party.identifier,
+          uri: party.identifier.uri || undefined,
+        },
         details: party.details
           ? {
               classifications: classifications.length ? classifications : undefined,

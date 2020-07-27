@@ -103,7 +103,7 @@ export const multiStageConverter = async (multiStage: Record): Promise<Converted
       contractTerms: {
         hasElectronicOrdering: tender.electronicWorkflows.useOrdering,
         hasElectronicPayment: tender.electronicWorkflows.usePayment,
-        electronicInvoicingPolicy: tender.electronicWorkflows.acceptInvoicing,
+        electronicInvoicingPolicy: tender.electronicWorkflows.acceptInvoicing ? 'allowed' : 'notAllowed',
       },
       crossBorderLaw: tender.legalBasis,
       techniques: {
@@ -121,7 +121,7 @@ export const multiStageConverter = async (multiStage: Record): Promise<Converted
         const classifications = [] as Classification[];
 
         if (party.details?.classifications) {
-          party.details?.classifications?.forEach((classification) => {
+          party.details.classifications.forEach((classification) => {
             classifications.push({
               scheme: classification.scheme,
               id: classification.id,

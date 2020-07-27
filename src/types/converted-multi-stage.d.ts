@@ -70,7 +70,7 @@ export interface ConvertedMultiStage {
     contractTerms: {
       hasElectronicOrdering: boolean;
       hasElectronicPayment: boolean;
-      electronicInvoicingPolicy: boolean;
+      electronicInvoicingPolicy: 'allowed' | 'notAllowed';
     };
     crossBorderLaw: string;
     techniques: {

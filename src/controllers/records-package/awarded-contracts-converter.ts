@@ -14,6 +14,10 @@ export const awardedContractsConverter = (
 
   const contacts = awardedContracts.flatMap(({ compiledRelease }) => compiledRelease.contracts);
 
+  const relatedContract = awardedContracts.find(({ compiledRelease: { contracts } }) => {
+    return contracts.find((contact) => contact.id === id);
+  });
+
   return {
     tag,
     id,
@@ -37,7 +41,7 @@ export const awardedContractsConverter = (
         id,
         internalId,
         date,
-        awardId,
+        awardID: awardId,
         title,
         description,
         status,
@@ -56,31 +60,26 @@ export const awardedContractsConverter = (
           dateMet,
           dateModified,
         })),
-        finance: awardedContracts
-          .find(({ compiledRelease: { contracts } }) => {
-            return contracts.find((contact) => contact.id === id);
-          })
-          ?.compiledRelease.planning?.budget.budgetSource?.map(({ budgetBreakdownID, amount, currency }) => ({
+        finance: relatedContract?.compiledRelease.planning?.budget.budgetSource?.map(
+          ({ budgetBreakdownID, amount, currency }) => ({
             id: budgetBreakdownID,
             amount,
             currency,
-          })),
-        implementation: {
-          transactions: awardedContracts
-            .find(({ compiledRelease: { contracts } }) => {
-              return contracts.find((contact) => contact.id === id);
-            })
-            ?.compiledRelease.planning?.implementation?.transactions.map(({ id, value, relatedContractMilestone }) => ({
-              id,
-              value,
-              relatedImplementationMilestone: relatedContractMilestone,
-            })),
-        },
-        suppliers: awardedContracts
-          .find(({ compiledRelease: { contracts } }) => {
-            return contracts.find((contact) => contact.id === id);
           })
-          ?.compiledRelease.parties.filter(({ roles }) => roles.includes('supplier'))
+        ),
+        implementation: relatedContract?.compiledRelease.planning?.implementation?.transactions
+          ? {
+              transactions: relatedContract?.compiledRelease.planning?.implementation?.transactions.map(
+                ({ id, value, relatedContractMilestone }) => ({
+                  id,
+                  value,
+                  relatedImplementationMilestone: relatedContractMilestone,
+                })
+              ),
+            }
+          : undefined,
+        suppliers: relatedContract?.compiledRelease.parties
+          .filter(({ roles }) => roles.includes('supplier'))
           .map(({ id, name }) => ({
             id,
             name,

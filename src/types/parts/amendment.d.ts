@@ -4,5 +4,5 @@ export interface Amendment {
   rationale: string;
   description: string;
   amendsReleaseID: string;
-  releaseId: string;
+  releaseID: string;
 }

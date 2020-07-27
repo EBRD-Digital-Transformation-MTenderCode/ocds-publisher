@@ -22,7 +22,8 @@ export interface Contract {
   id: string;
   internalId: string;
   date: string;
-  awardId: string;
+  awardId?: string;
+  awardID?: string;
   title: string;
   description: string;
   status: string;

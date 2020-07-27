@@ -16,6 +16,7 @@ import { publicPoint } from 'config';
 
 import type { RequestHandler } from 'fastify';
 import type { RecordsPackage } from 'types';
+import type { Award, Party } from 'types/parts';
 
 export const getRecordsPackage: RequestHandler<unknown, unknown, unknown, { ocid: string }> = async ({
   params: { ocid },
@@ -39,10 +40,10 @@ export const getRecordsPackage: RequestHandler<unknown, unknown, unknown, { ocid
     const contractNotice = records.find((record) => patterns.contractNoticeOcid.test(record.ocid));
     const awardedContracts = records.filter((record) => patterns.awardedContractOcid.test(record.ocid));
 
-    return {
+    const response = {
       uri: `${publicPoint.baseUrl}/ocds/tenders/${multiStage.ocid}`,
       version: '1.1',
-      extensions: [
+      /* extensions: [
         'https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json',
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_enquiry_extension/master/extension.json',
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_finance_extension/master/extension.json',
@@ -66,7 +67,7 @@ export const getRecordsPackage: RequestHandler<unknown, unknown, unknown, { ocid
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_requirements_extension/master/extension.json',
         'https://raw.githubusercontent.com/open-contracting-extensions/ocds_otherRequirements_extension/master/extension.json',
         'https://raw.githubusercontent.com/eOCDS-Extensions/eOCDS-conversions/master/extension.json',
-      ],
+      ],*/
       publishedDate: data.publishedDate,
       releases: [
         merge(
@@ -88,6 +89,28 @@ export const getRecordsPackage: RequestHandler<unknown, unknown, unknown, { ocid
       license: 'http://opendefinition.org/licenses/',
       publicationPolicy: 'http://opendefinition.org/licenses/',
     };
+
+    response.releases[0].parties = response.releases[0].parties.reduce((patries: Party[], party: Party) => {
+      const duplicatedParty = patries.find(({ id }) => id === party.id);
+
+      if (duplicatedParty) {
+        duplicatedParty.roles = Array.from(new Set(duplicatedParty.roles.concat(party.roles)));
+
+        return patries;
+      }
+
+      return [...patries, party];
+    }, []);
+
+    if (response.releases[0].awards) {
+      const awardIds = new Set(response.releases[0].awards.map(({ id }) => id));
+
+      response.releases[0].awards = Array.from(awardIds).map((id) => {
+        return response.releases[0].awards?.find((party) => party.id === id) as Award;
+      });
+    }
+
+    return response;
   } catch (e) {
     console.log(e);
     return e.isAxiosError ? e.toJSON() : e;
