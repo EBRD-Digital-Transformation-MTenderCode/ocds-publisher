@@ -1,6 +1,7 @@
 FROM node:lts-slim
 
 ARG SERVICE_PORT
+ARG PUBLIC_POINT_URL
 
 ENV NODE_ENV=production
 ENV NODE_PATH=./build/app

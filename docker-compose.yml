@@ -10,3 +10,4 @@ services:
       - ${SERVICE_PORT}
     environment:
       - SERVICE_PORT=${SERVICE_PORT}
+      - PUBLIC_POINT_URL=${PUBLIC_POINT_URL}
